@@ -94,3 +94,11 @@ const quizQuestions = [
         ]
     }
 ];
+
+// Biến lưu trữ trạng thái hiện tại của quiz
+let currentQuestionIndex = 0; // Chỉ số câu hỏi hiện tại
+let score = 0; // Điểm số hiện tại
+let answersDisabled = false; // Cờ để kiểm tra xem các nút trả lời đã bị vô hiệu hóa hay chưa
+
+totalQuestionsSpan.textContent = quizQuestions.length; // Hiển thị tổng số câu hỏi trên giao diện
+maxScoreSpan.textContent = quizQuestions.length; // Điểm tối đa bằng tổng số câu hỏi
