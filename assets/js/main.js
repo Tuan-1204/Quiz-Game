@@ -1,34 +1,31 @@
-//Dom elements
-// Màn hình bắt đầu (Start Screen)
+// DOM ELEMENTS
+// Màn hình bắt đầu
 const startScreen = document.getElementById('start-screen');
-// Màn hình hiển thị câu hỏi (Quiz Screen)
+
+// Màn hình làm bài
 const quizScreen = document.getElementById('quiz-screen');
-// Thẻ hiển thị nội dung câu hỏi
+
+// Nội dung câu hỏi
 const questionText = document.getElementById('question-text');
-// Container chứa các đáp án (các nút trả lời)
+
+// Container chứa đáp án
 const answersContainer = document.getElementById('answers-container');
-// Màn hình hiển thị kết quả cuối cùng
+
+// Màn hình kết quả
 const resultScreen = document.getElementById('result-screen');
-// Nút bắt đầu làm bài
+
+// Các nút và thẻ hiển thị
 const startBtn = document.getElementById('start-btn');
-// Thẻ hiển thị số câu hỏi hiện tại
 const currentQuestionSpan = document.getElementById('current-question');
-// Thẻ hiển thị tổng số câu hỏi
 const totalQuestionsSpan = document.getElementById('total-questions');
-// Thẻ hiển thị điểm hiện tại khi đang làm bài
 const scoreSpan = document.getElementById('score');
-// Thẻ hiển thị điểm cuối cùng khi hoàn thành
 const finalScoreSpan = document.getElementById('final-score');
-// Thẻ hiển thị điểm tối đa có thể đạt được
-const maxScoreSpan = document.getElementById('max-score');
-// Thẻ hiển thị thông báo kết quả (Giỏi, Khá, Trung bình,...)
+const maxScoreSpan = document.getElementById('total-score');
 const resultMessage = document.getElementById('result-message');
-// Nút chơi lại
 const restartBtn = document.getElementById('restart-btn');
-// Thanh tiến trình (progress bar) hiển thị % hoàn thành bài quiz
 const progressBar = document.getElementById('progress');
 
-// tạo câu hỏi
+//  DỮ LIỆU CÂU HỎI 
 const quizQuestions = [
     {
         question: "Ai là người lãnh đạo Cách mạng Tháng Tám năm 1945?",
@@ -76,7 +73,7 @@ const quizQuestions = [
         ]
     },
     {
-        question: "Ngày Giải phóng miền Nam, thống nhất đất nước là ngày nào?",
+        question: "Ngày Giải phóng miền Nam là ngày nào?",
         answers: [
             { text: "2/9/1945", isCorrect: false },
             { text: "30/4/1975", isCorrect: true },
@@ -85,7 +82,7 @@ const quizQuestions = [
         ]
     },
     {
-        question: "Ai là người sáng lập ra nước Văn Lang?",
+        question: "Ai là người sáng lập nước Văn Lang?",
         answers: [
             { text: "An Dương Vương", isCorrect: false },
             { text: "Hùng Vương", isCorrect: true },
@@ -95,10 +92,131 @@ const quizQuestions = [
     }
 ];
 
-// Biến lưu trữ trạng thái hiện tại của quiz
-let currentQuestionIndex = 0; // Chỉ số câu hỏi hiện tại
-let score = 0; // Điểm số hiện tại
-let answersDisabled = false; // Cờ để kiểm tra xem các nút trả lời đã bị vô hiệu hóa hay chưa
+//  BIẾN TRẠNG THÁI
+let currentQuestionIndex = 0; // Vị trí câu hỏi hiện tại
+let score = 0; // Điểm số
+let answersDisabled = false; // Cờ khóa đáp án
 
-totalQuestionsSpan.textContent = quizQuestions.length; // Hiển thị tổng số câu hỏi trên giao diện
-maxScoreSpan.textContent = quizQuestions.length; // Điểm tối đa bằng tổng số câu hỏi
+// Hiển thị tổng câu hỏi và điểm tối đa
+totalQuestionsSpan.textContent = quizQuestions.length;
+maxScoreSpan.textContent = quizQuestions.length;
+
+//  SỰ KIỆN
+startBtn.addEventListener('click', startQuiz);
+restartBtn.addEventListener('click', restartQuiz);
+
+//  HÀM BẮT ĐẦU QUIZ 
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    scoreSpan.textContent = 0;
+
+    startScreen.classList.remove('active');
+    resultScreen.classList.remove('active');
+    quizScreen.classList.add('active');
+
+    showQuestion();
+}
+
+//  HIỂN THỊ CÂU HỎI 
+function showQuestion() {
+    answersDisabled = false;
+
+    const currentQuestion = quizQuestions[currentQuestionIndex];
+
+    // Cập nhật số câu
+    currentQuestionSpan.textContent = currentQuestionIndex + 1;
+
+    // Cập nhật progress bar
+    const progressPercent = (currentQuestionIndex / quizQuestions.length) * 100;
+    progressBar.style.width = progressPercent + "%";
+
+    // Hiển thị nội dung câu hỏi
+    questionText.textContent = currentQuestion.question;
+
+    // Xóa đáp án cũ
+    answersContainer.innerHTML = "";
+
+    // Tạo các nút đáp án
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.textContent = answer.text;
+        button.classList.add('answer-btn');
+
+        // Gán sự kiện click
+        button.addEventListener('click', () => selectAnswer(answer, button));
+
+        answersContainer.appendChild(button);
+    });
+}
+
+//  XỬ LÝ CHỌN ĐÁP ÁN
+function selectAnswer(answer, buttonElement) {
+
+    if (answersDisabled) return;
+
+    answersDisabled = true;
+
+    // Nếu đúng → tăng điểm
+    if (answer.isCorrect) {
+        score++;
+        scoreSpan.textContent = score;
+        buttonElement.classList.add('correct');
+    } else {
+        buttonElement.classList.add('wrong');
+    }
+
+    // Hiển thị đáp án đúng
+    Array.from(answersContainer.children).forEach(btn => {
+        const text = btn.textContent;
+        const correctAnswer = quizQuestions[currentQuestionIndex].answers.find(a => a.isCorrect);
+
+        if (text === correctAnswer.text) {
+            btn.classList.add('correct');
+        }
+    });
+
+    // Chuyển câu sau sau 1.2 giây
+    setTimeout(() => {
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizQuestions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+
+    }, 1200);
+}
+
+//  HIỂN THỊ KẾT QUẢ 
+function showResult() {
+
+    quizScreen.classList.remove('active');
+    resultScreen.classList.add('active');
+
+    finalScoreSpan.textContent = score;
+
+    const percent = (score / quizQuestions.length) * 100;
+
+    if (percent === 100) {
+        resultMessage.textContent = "Xuất sắc! 🎉";
+    } else if (percent >= 70) {
+        resultMessage.textContent = "Khá tốt! 👍";
+    } else if (percent >= 50) {
+        resultMessage.textContent = "Trung bình 🙂";
+    } else {
+        resultMessage.textContent = "Cần cố gắng hơn 💪";
+    }
+
+    // Thanh tiến trình đầy 100%
+    progressBar.style.width = "100%";
+}
+
+// CHƠI LẠI 
+function restartQuiz() {
+    resultScreen.classList.remove('active');
+    startScreen.classList.add('active');
+
+    progressBar.style.width = "0%";
+}
