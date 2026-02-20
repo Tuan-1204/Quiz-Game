@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- hiển thị ban đầu khi truy cập trang web -->
+    <div class="screen active " id="start-screen">
+        <h1>Quiz Time !</h1>
+        <p>Test your Knơwledge with these fun questions!</p>
+        <button id="start-btn">Start Quiz</button>
+    </div>
+
+    <!-- màn hình khi bắt đầu quiz -->
+    <div class="screen" id="quiz-screen">
+        <!-- tiêu đề câu hỏi -->
+         <div class="quiz-header">
+            <h2 id="question-text">Question goes here</h2>
+            <!-- thứ tự câu hỏi -->
+             <div class="quiz-info">
+                <p>
+                    Question <span id="current-question">1</span> of <span id="total-questions">5</span>
+                </p>
+                <!-- Điểm đúng khi trả lời câu hỏi -->
+                 <p>
+                    Score: <span id="score">0</span>
+                 </p>
+             </div>
+         </div>
+
+         <!-- câu trả lời đúng -->
+          <div id="answers-container" class="answers-container">
+
+            <</div>
+
+            <!-- thanh tiến độ trả lời câu hỏi -->
+                <div class="progress-bar">
+                    <div id="progress" class="progress"></div>
+                </div>
+    </div>
+
+<!-- màn hình hiển thị kết quả -->
+    <div id="result-screen" class="screen">
+        <h1>Quiz Result</h1>
+        <!-- thông tin kết quả -->
+         <div class="result-info">
+            <!-- hiển thị câu trả lời đúng trên tổng số câu hỏi -->
+            <p>You scored <span id="final-score">0</span> out of <span id="total-score">5</span></p>
+            <!-- thông báo kết quả -->
+             <div id="result-message">
+                Good
+             </div>
+
+         </div>
+         <!-- reset lại game -->
+         <button id="restart-btn">Restart Quiz</button>
+    </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
